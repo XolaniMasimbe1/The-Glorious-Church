@@ -1,19 +1,26 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { initializeFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { getAnalytics, isSupported } from 'firebase/analytics';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAyx7k2F-90s5ezqtgWALaI7eYMzxf_OfI",
-  authDomain: "the-glorious-church-3dd9c.firebaseapp.com",
-  projectId: "the-glorious-church-3dd9c",
-  storageBucket: "the-glorious-church-3dd9c.firebasestorage.app",
-  messagingSenderId: "384451210215",
-  appId: "1:384451210215:web:140bcd7370396e7aa4eb42",
-  measurementId: "G-S89CVJQCTZ"
+  apiKey: "AIzaSyAn5QFh6RjOxXeFplA6MRejmWHyHlll87c",
+  authDomain: "the-glorious-church.firebaseapp.com",
+  projectId: "the-glorious-church",
+  storageBucket: "the-glorious-church.firebasestorage.app",
+  messagingSenderId: "262634622804",
+  appId: "1:262634622804:web:230d7750f52fa63f2582c1",
+  measurementId: "G-609S19MN7Q"
 };
 
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-export const db = getFirestore(app);
+export const db = initializeFirestore(app, {
+  experimentalAutoDetectLongPolling: true,
+});
 export const storage = getStorage(app);
+
+export const analytics = isSupported().then((supported) => (
+  supported ? getAnalytics(app) : null
+));

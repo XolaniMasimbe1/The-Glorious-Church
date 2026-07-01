@@ -1,21 +1,55 @@
-return (
-  <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-100 flex items-center justify-center px-4 py-8">
-    <div className="w-full max-w-md">
-      <div className="bg-white/90 backdrop-blur border border-slate-200 rounded-3xl shadow-xl px-8 py-10">
-        <div className="text-center mb-8">
-          <img
-            src="/logo.png"
-            alt="The Glorious Church Logo"
-            className="w-32 mx-auto mb-5"
-          />
-          
-          <h1 className="text-2xl font-bold text-slate-800">
-            The Glorious Church
-          </h1>
+import { useState } from 'react';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { LogIn } from 'lucide-react';
+import { useAuth } from '@/hooks/useAuth';
+import { getAuthErrorMessage } from '@/services/authService';
+import AlertBanner from '@/components/ui/AlertBanner';
 
-          <p className="text-sm text-slate-500 mt-2">
-            Sign in to continue to the management system
-          </p>
+export default function LoginPage() {
+  const { signIn, isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const redirectTo = location.state?.from || '/dashboard';
+
+  if (!isLoading && isAuthenticated) {
+    return <Navigate to={redirectTo} replace />;
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-slate-900 text-slate-100 flex items-center justify-center">
+        <p className="text-sm text-slate-400">Verifying session...</p>
+      </div>
+    );
+  }
+
+  async function handleSubmit(event) {
+    event.preventDefault();
+    setError('');
+    setIsSubmitting(true);
+
+    try {
+      await signIn(email.trim(), password);
+      navigate(redirectTo, { replace: true });
+    } catch (err) {
+      console.error('Authentication Failure:', err);
+      setError(getAuthErrorMessage(err));
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
+  return (
+    <div className="bg-slate-900 text-slate-100 font-sans min-h-screen flex items-center justify-center p-4">
+      <div className="bg-slate-800 border border-slate-700/70 rounded-xl w-full max-w-sm shadow-xl p-6 space-y-4 text-xs">
+        <div className="text-center space-y-1">
+          <h2 className="text-lg font-bold text-white tracking-wide">The Glorious Church</h2>
+          <p className="text-slate-400">Management Roster Authentication Node</p>
         </div>
 
         <AlertBanner message={error} />
@@ -29,6 +63,7 @@ return (
             <input
               type="email"
               required
+              autoComplete="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -44,6 +79,7 @@ return (
             <input
               type="password"
               required
+              autoComplete="current-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
@@ -77,7 +113,14 @@ return (
             {isSubmitting ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
+
+        <p className="text-center text-slate-400 pt-1">
+          First time here?{' '}
+          <Link to="/register" className="text-indigo-400 hover:text-indigo-300 font-medium">
+            Create an account
+          </Link>
+        </p>
       </div>
     </div>
-  </div>
-);
+  );
+}
