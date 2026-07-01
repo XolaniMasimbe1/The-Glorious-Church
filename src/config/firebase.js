@@ -4,12 +4,13 @@ import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  apiKey: "AIzaSyAyx7k2F-90s5ezqtgWALaI7eYMzxf_OfI",
+  authDomain: "the-glorious-church-3dd9c.firebaseapp.com",
+  projectId: "the-glorious-church-3dd9c",
+  storageBucket: "the-glorious-church-3dd9c.firebasestorage.app",
+  messagingSenderId: "384451210215",
+  appId: "1:384451210215:web:140bcd7370396e7aa4eb42",
+  measurementId: "G-S89CVJQCTZ"
 };
 
 export const app = initializeApp(firebaseConfig);
